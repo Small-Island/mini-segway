@@ -10,9 +10,6 @@ setVelM2 = np.array(0, dtype='int16')
 momoRecvTime = 0
 run = True
 
-#turning_vel = 0.0 # -45 ~ 45 (deg/sec)
-#forward_vel = 0.0 # -1.0 ~ 1.0 (meter/sec)
-
 def udp_loop():
     global run, setVelM1, setVelM2, udpRecvTime
     M_SIZE = 1024
@@ -22,8 +19,6 @@ def udp_loop():
     sock.settimeout(1)
     print('create socket')
     sock.bind((host, port))
-    # global setVelM1, setVelM2, momoRecvTime
-    # ser = serial.Serial('./serial_out', 9600)
     while run:
         try :
             print('udp loop: Waiting message')
@@ -53,6 +48,7 @@ while run:
     try:
         time.sleep(1)
         h.open(0x2886, 0x802f)
+        print("hoge1")
     except OSError as e:
         print(f"hid loop: {e}")
         print("hid loop: usb not open. try to open in 1sec")
@@ -62,7 +58,11 @@ while run:
         thread_udp.join()
         # quit()
         break
+    except Exception as e:
+        print("hogee")
+        print(e)
     else:
+        print("hoge")
         break
 
     print("start")
