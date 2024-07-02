@@ -1,0 +1,4 @@
+numpy
+hidapi
+pyserial
+serial

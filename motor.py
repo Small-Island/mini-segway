@@ -7,15 +7,17 @@ import threading
 setVelM1 = np.array(0, dtype='int16')
 setVelM2 = np.array(0, dtype='int16')
 momoRecvTime = 0
+run = True
 
 #turning_vel = 0.0 # -45 ~ 45 (deg/sec)
 #forward_vel = 0.0 # -1.0 ~ 1.0 (meter/sec)
 
-def momo_loop():
+def udp_loop():
     # global setVelM1, setVelM2, momoRecvTime
     # ser = serial.Serial('./serial_out', 9600)
-    while True:
-        print("hello")
+    while run:
+        # print("hello")
+        x = 1
         # data = ser.read(4)
         # momoRecvTime = time.time()
         # read_array = np.array([data[0], data[1], data[2], data[3]], dtype='int8')
@@ -32,8 +34,8 @@ def momo_loop():
         
         # print('recvVel', setVelM1, setVelM2)
 
-thread_momo = threading.Thread(target=momo_loop)
-thread_momo.start()
+thread_udp = threading.Thread(target=udp_loop)
+thread_udp.start()
 
 import hid
 h = hid.device()
@@ -68,6 +70,7 @@ while 1:
     except KeyboardInterrupt :
         h.close()
         thread_momo.join()
+        run = False
         break
     except Exception as e:
         print(e)
