@@ -15,9 +15,9 @@ def joy_event(joy):
     # axis = (joy.get_axis(0), joy.get_axis(1)) # 左スティックの左右．
     # print(f"Get status of left axis (左右，上下) = {axis}")
     axis = (joy.get_axis(2), joy.get_axis(3)) # 右スティックの左右．
-    print(f"Get status of right axis (左右，上下) = {axis}")
-    turning_vel = int(axis[0]*127)
-    forward_vel = int(axis[1]*127)
+    # print(f"Get status of right axis (左右，上下) = {axis}")
+    turning_vel = int(axis[0]*100)
+    forward_vel = int(axis[1]*100)
 
 run = True
 
@@ -25,15 +25,17 @@ def udp_loop():
     global run, turning_vel, forward_vel
     import socket
     M_SIZE = 1024
-    host = "127.0.0.1"
+    host = 'localhost'
     port = 9001
     sock = socket.socket(socket.AF_INET, type=socket.SOCK_DGRAM)
     print('create socket')
-    sock.bind((host, port))
     while run:
         try :
+            print("To quit, press B-button.")
             print(f'udp loop: sending ({turning_vel, forward_vel})')
-            sock.sendto(turning_vel.to_bytes(1, 'little', signed=True) + forward_vel.to_bytes(1, 'little', signed=True), (host, port))
+            msg = turning_vel.to_bytes(2, 'big', signed=True) + forward_vel.to_bytes(2, 'big', signed=True)
+            print(f'udp loop: sending {msg}')
+            sock.sendto(msg, (host, port))
             time.sleep(0.1)
         except socket.error as e:
             print(f"udp loop: {e}")
@@ -61,7 +63,7 @@ def main():
         sys.exit(1)
 
     try:
-        while True:
+        while run:
             event = pygame.event.wait() # Wait until getting event from queue
 
             btn_b = joy.get_button(1) # B button to exit
@@ -69,7 +71,7 @@ def main():
                 run = False
                 break
 
-            print("To quit, press B-button.")
+            # print("To quit, press B-button.")
             joy_event(joy)
 
             #print(event)
