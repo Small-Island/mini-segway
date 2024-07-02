@@ -2,3 +2,5 @@ numpy
 hidapi
 pyserial
 serial
+pygame
+sockets
