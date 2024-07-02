@@ -34,7 +34,7 @@ def udp_loop():
         try :
             print(f'udp loop: sending ({turning_vel, forward_vel})')
             sock.sendto(turning_vel.to_bytes(1, 'little', signed=True) + forward_vel.to_bytes(1, 'little', signed=True), (host, port))
-            time.sleep(0.05)
+            time.sleep(0.1)
         except socket.error as e:
             print(f"udp loop: {e}")
         except KeyboardInterrupt :
