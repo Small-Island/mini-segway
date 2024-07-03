@@ -28,8 +28,8 @@ def udp_loop():
             turning_vel = int.from_bytes(message[0:2], byteorder='big', signed=True)
             forward_vel = int.from_bytes(message[2:4], byteorder='big', signed=True)
             print(f'udp loop: velocity ({turning_vel, forward_vel})')
-            setVelM1 = 150 * forward_vel - 50*turning_vel
-            setVelM2 = -(150 * forward_vel + 50*turning_vel)
+            setVelM1 = forward_vel - turning_vel
+            setVelM2 = -(forward_vel + turning_vel)
         except socket.error as e:
             print(f"udp loop: {e}")
         except KeyboardInterrupt :

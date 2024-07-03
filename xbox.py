@@ -14,8 +14,12 @@ def joy_event(joy):
     global turning_vel, forward_vel
     # axis = (joy.get_axis(0), joy.get_axis(1)) # 左スティックの左右．
     # print(f"Get status of left axis (左右，上下) = {axis}")
-    axis = (joy.get_axis(2), joy.get_axis(3)) # 右スティックの左右．
+    axis = [-joy.get_axis(2), -joy.get_axis(3)] # 右スティックの左右．
     # print(f"Get status of right axis (左右，上下) = {axis}")
+    if abs(axis[0]) < 0.1:
+        axis[0] = 0
+    if abs(axis[1]) < 0.1:
+        axis[1] = 0
     turning_vel = int(axis[0]*100)
     forward_vel = int(axis[1]*100)
 
