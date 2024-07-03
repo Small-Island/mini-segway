@@ -95,11 +95,10 @@ while run:
             # msg = b'\x01\xff\x04'
             ser.write(msg)
             # print(f"serial loop: send {msg}")
-            # x = b''
-            # for i in range(0, 4):
-            #     x = x + ser.read()
-            #     print(f"serial loop: read {x}")
-            #     if i == 0:
+            x = b''
+            for i in range(0, 4):
+                x = x + ser.read()
+                print(f"serial loop: read {x}")
                     
             # getBytes = ser.read(4)
             # getVelM1 = np.array((getBytes[0] << 8) + getBytes[1], dtype='int16') 

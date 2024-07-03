@@ -148,6 +148,11 @@ int W_out [6] = {0, 0, 0, 0, 1, 1};
 int SWout [6] = {0, 1, 1, 0, 1, 1};
 int duty = 100;//pmw comment 0-1023
 
+int16_t targVelM1_Upper = 0;
+int16_t targVelM1_Lower = 0;
+int16_t targVelM2_Upper = 0;
+int16_t targVelM2_Lower = 0;
+
 void loop() {
   ////////////////////////////////////
   //communication with PC with Serial
@@ -157,20 +162,22 @@ void loop() {
     Serial.write(data);
     switch (idx) {
       case 0:
-        targVelM1 = (int16_t)(data << 8);
+        targVelM1_Upper = (int16_t)(data << 8);
         break;
       case 1:
-        targVelM1 = targVelM1 | (int16_t)(data);
+        targVelM1_Lower = (int16_t)(data);
         break;
       case 2:
-        targVelM2 = (int16_t)(data << 8);
+        targVelM2_Upper = (int16_t)(data << 8);
         break;
       case 3:
-        targVelM2 = targVelM1 | (int16_t)(data);
+        targVelM2_Lower = (int16_t)(data);
         break;
     }
     idx++;
   }
+  targVelM1 = targVelM1_Upper | targVelM1_Lower;
+  targVelM2 = targVelM2_Upper | targVelM2_Lower;
   // Serial.println(', ');
   ////////////////////////////////////
   //communication with slaveID

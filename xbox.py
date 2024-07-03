@@ -20,8 +20,8 @@ def joy_event(joy):
         axis[0] = 0
     if abs(axis[1]) < 0.1:
         axis[1] = 0
-    turning_vel = int(axis[0]*100)
-    forward_vel = int(axis[1]*100)
+    turning_vel = int(axis[0]*50)
+    forward_vel = int(axis[1]*150)
 
 run = True
 
