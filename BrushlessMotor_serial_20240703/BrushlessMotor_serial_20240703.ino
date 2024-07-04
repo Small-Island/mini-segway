@@ -37,6 +37,7 @@ int numPole = 15;
 int nowPosition = 0, lastPosition = 0, nextPos = 0;;
 long realPosition = 0, lastRealPos = 0, numCircle = 0;
 long nowTime = 0, lastTime = 0, lastTimeVelo = 0;
+// long hidReceiveTime = 0;
 int myVelocity = 200, nowVelocity = 0, lV = 0, llV = 0, aV = 0, aVM2 = 0;//degree per second
 int setCurrentVelocity = 0;
 
@@ -162,26 +163,46 @@ void loop() {
   uint8_t idx = 0;
   while (Serial.available()) {
     uint8_t data = Serial.read();
-    Serial.write(data);
     switch (idx) {
       case 0:
-        targVelM1_Upper = (int16_t)(data << 8);
+        targVelM1_Upper = (int16_t)(data << 8) & 0xFFFF;
+        Serial.write(data);
         break;
       case 1:
-        targVelM1_Lower = (int16_t)(data);
+        targVelM1_Lower = (int16_t)(data) & 0xFFFF;
+        Serial.write(data);
         break;
       case 2:
-        targVelM2_Upper = (int16_t)(data << 8);
+        targVelM2_Upper = (int16_t)(data << 8) & 0xFFFF;
+        Serial.write(data);
         break;
       case 3:
-        targVelM2_Lower = (int16_t)(data);
+        targVelM2_Lower = (int16_t)(data) & 0xFFFF;
+        Serial.write(data);
+        targVelM1 = targVelM1_Upper | targVelM1_Lower;
+        targVelM2 = targVelM2_Upper | targVelM2_Lower;
+        char buf[4] = {0, 0, 0, 0};
+        buf[0] = ((uint16_t)targVelM1 >> 8) & 0xFF;
+        buf[1] = ((uint8_t)targVelM1) & 0xFF;
+        buf[2] = ((uint16_t)targVelM2 >> 8) & 0xFF;
+        buf[3] = ((uint8_t)targVelM2) & 0xFF;
+        Serial.write(buf[0]);
+        Serial.write(buf[1]);
+        Serial.write(buf[2]);
+        Serial.write(buf[3]);
         break;
     }
     idx++;
   }
-  targVelM1 = targVelM1_Upper | targVelM1_Lower;
-  targVelM2 = targVelM2_Upper | targVelM2_Lower;
-  // Serial.println(', ');
+  // targVelM1 = targVelM1_Upper | targVelM1_Lower;
+  // targVelM2 = targVelM2_Upper | targVelM2_Lower;
+  // char buf[2] = {0, 0};
+  // // buf[0] = ((uint16_t)targVelM1 >> 8) & 0xFF;
+  // // buf[1] = ((uint8_t)targVelM1) & 0xFF;
+  // Serial.write(buf[0]);
+  // Serial.write(buf[1]);
+  // targVelM1 = 20;
+  // Serial.println(targVelM1);
   ////////////////////////////////////
   //communication with slaveID
   Wire.beginTransmission(slaveID); //スレーブが存在するか確認(モータ２）
@@ -190,7 +211,7 @@ void loop() {
     uint16_t len = 2;
     byte setTgSlv[] = {0, 0};
     setTgSlv[0] = ((uint8_t)(((uint16_t)targVelM2) >> 8)) & 0xFF;
-    setTgSlv[1] = ((uint16_t)(targVelM2)) & 0xFF;
+    setTgSlv[1] = (uint8_t)(((uint16_t)(targVelM2)) & 0xFF);
     Wire.beginTransmission(slaveID); //スタート・コンディションの発行
     for (int i = 0; i < 2; i++){
       Wire.write(setTgSlv[i]);

@@ -94,11 +94,13 @@ while run:
             msg = setVelM1.to_bytes(2, 'big', signed=True) + setVelM2.to_bytes(2, 'big', signed=True)
             # msg = b'\x01\xff\x04'
             ser.write(msg)
-            # print(f"serial loop: send {msg}")
+            print(f"serial loop: send {msg.hex()}")
             x = b''
-            for i in range(0, 4):
+            for i in range(0, 8):
                 x = x + ser.read()
-                print(f"serial loop: read {x}")
+                # print(f"serial loop: read {x}")
+            print(f"serial loop: read {x.hex()}")
+            print(f"serial loop: targVelM1 {int.from_bytes(x[4:6], byteorder='big', signed=True)}, targVelM2 {int.from_bytes(x[6:8], byteorder='big', signed=True)}")
                     
             # getBytes = ser.read(4)
             # getVelM1 = np.array((getBytes[0] << 8) + getBytes[1], dtype='int16') 
